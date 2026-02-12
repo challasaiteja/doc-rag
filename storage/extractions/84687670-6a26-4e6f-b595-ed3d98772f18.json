@@ -1,0 +1,75 @@
+{
+  "document_type": "insurance_claim",
+  "fields": {
+    "claim_number": {
+      "value": "Claim",
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Claim\n    Claim",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    },
+    "claimant_name": {
+      "value": "Alice Adams",
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Claimant: Alice Adams",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    },
+    "date_of_service": {
+      "value": "01/05/2026",
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Date of Service: 01/05/2026",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    },
+    "total_amount": {
+      "value": 1200.0,
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Total Amount: $1200.00",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    },
+    "provider_name": {
+      "value": "Valley Clinic",
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Provider: Valley Clinic",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    },
+    "policy_number": {
+      "value": "POL-222",
+      "confidence": 0.55,
+      "evidence": [
+        {
+          "quote": "Policy Number: POL-222",
+          "bbox": null,
+          "page_number": null
+        }
+      ]
+    }
+  },
+  "line_items": [],
+  "raw_response": {
+    "mode": "fallback"
+  }
+}

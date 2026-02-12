@@ -1,0 +1,10 @@
+{
+  "full_text": "\n    Insurance Claim\n    Claim Number: CLM-9001\n    Claimant: Alice Adams\n    Date of Service: 01/05/2026\n    Provider: Valley Clinic\n    Policy Number: POL-222\n    Total Amount: $1200.00\n    ",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "\n    Insurance Claim\n    Claim Number: CLM-9001\n    Claimant: Alice Adams\n    Date of Service: 01/05/2026\n    Provider: Valley Clinic\n    Policy Number: POL-222\n    Total Amount: $1200.00\n    ",
+      "words": []
+    }
+  ]
+}

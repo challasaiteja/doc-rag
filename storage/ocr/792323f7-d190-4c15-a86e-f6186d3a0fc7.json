@@ -1,0 +1,10 @@
+{
+  "full_text": "\n    Medical Bill\n    Invoice Number: INV-442\n    Patient Name: Bob Baker\n    Date of Service: 01/09/2026\n    Provider Name: Care Hospital\n    Total Amount: $350.00\n    ",
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "\n    Medical Bill\n    Invoice Number: INV-442\n    Patient Name: Bob Baker\n    Date of Service: 01/09/2026\n    Provider Name: Care Hospital\n    Total Amount: $350.00\n    ",
+      "words": []
+    }
+  ]
+}
