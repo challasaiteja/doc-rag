@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+python-multipart
+openai
+pytesseract
+Pillow
+PyMuPDF
+pytest
+requests
+streamlit
