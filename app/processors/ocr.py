@@ -2,21 +2,22 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
-
-from PIL import Image
+from typing import TYPE_CHECKING
 
 from app.schemas import OCRPage, OCRResult, OCRWord, SourceBBox
 
+if TYPE_CHECKING:
+    from PIL import Image as ImageModule
 
-def _ocr_image(image: Image.Image, page_number: int) -> OCRPage:
+
+def _ocr_image(image: ImageModule.Image, page_number: int) -> OCRPage:
     import pytesseract
 
     text = pytesseract.image_to_string(image) or ""
     data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
 
     words: list[OCRWord] = []
-    total = len(data.get("text", []))
-    for idx in range(total):
+    for idx in range(len(data.get("text", []))):
         raw_text = (data["text"][idx] or "").strip()
         if not raw_text:
             continue
@@ -40,6 +41,8 @@ def _ocr_image(image: Image.Image, page_number: int) -> OCRPage:
 
 
 def run_ocr(file_path: str) -> OCRResult:
+    from PIL import Image
+
     path = Path(file_path)
     suffix = path.suffix.lower()
 
@@ -53,14 +56,13 @@ def run_ocr(file_path: str) -> OCRResult:
 
         pages: list[OCRPage] = []
         with fitz.open(path) as pdf_doc:
-            for index, page in enumerate(pdf_doc, start=1):
-                pix = page.get_pixmap(dpi=220)
-                image_bytes = pix.tobytes("png")
-                image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            for index, pdf_page in enumerate(pdf_doc, start=1):
+                pix = pdf_page.get_pixmap(dpi=220)
+                image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
                 pages.append(_ocr_image(image, page_number=index))
 
         return OCRResult(
-            full_text="\n".join(page.text for page in pages if page.text),
+            full_text="\n".join(p.text for p in pages if p.text),
             pages=pages,
         )
 

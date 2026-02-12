@@ -27,7 +27,7 @@ def create_app() -> FastAPI:
 
     @app.get("/", include_in_schema=False)
     def root() -> RedirectResponse:
-        return RedirectResponse(url="/api/review/ui")
+        return RedirectResponse(url="/docs")
 
     app.include_router(upload_router)
     app.include_router(review_router)

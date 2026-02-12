@@ -6,6 +6,10 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
+# ---------------------------------------------------------------------------
+# Evidence / extraction primitives
+# ---------------------------------------------------------------------------
+
 class SourceBBox(BaseModel):
     x: float
     y: float
@@ -33,6 +37,10 @@ class LineItemExtraction(BaseModel):
     evidence: list[SourceEvidence] = Field(default_factory=list)
 
 
+# ---------------------------------------------------------------------------
+# Type-specific extraction schemas
+# ---------------------------------------------------------------------------
+
 class InsuranceClaimExtraction(BaseModel):
     document_type: Literal["insurance_claim"]
     claim_number: ExtractedField
@@ -54,6 +62,10 @@ class MedicalBillExtraction(BaseModel):
     line_items: list[LineItemExtraction] = Field(default_factory=list)
 
 
+# ---------------------------------------------------------------------------
+# OCR schemas
+# ---------------------------------------------------------------------------
+
 class OCRWord(BaseModel):
     text: str
     confidence: float
@@ -72,6 +84,10 @@ class OCRResult(BaseModel):
     pages: list[OCRPage]
 
 
+# ---------------------------------------------------------------------------
+# Pipeline result
+# ---------------------------------------------------------------------------
+
 class ExtractionResult(BaseModel):
     document_type: Literal["insurance_claim", "medical_bill"]
     fields: dict[str, ExtractedField]
@@ -86,35 +102,61 @@ class ExtractionResult(BaseModel):
         return value
 
 
+# ---------------------------------------------------------------------------
+# API response / request DTOs
+# ---------------------------------------------------------------------------
+
 class UploadResponse(BaseModel):
     document_id: str
     status: str
     document_type: str | None = None
     confidence_score: float | None = None
 
+    @classmethod
+    def from_document(cls, doc: Any) -> UploadResponse:
+        return cls(
+            document_id=doc.id,
+            status=doc.status.value if hasattr(doc.status, "value") else str(doc.status),
+            document_type=doc.document_type,
+            confidence_score=doc.confidence_score,
+        )
 
-class DocumentListItem(BaseModel):
+
+class DocumentSummary(BaseModel):
+    """Shared base for document list items and review queue entries."""
     model_config = ConfigDict(from_attributes=True)
 
     id: str
     original_filename: str
-    content_type: str
     status: str
     document_type: str | None
     confidence_score: float | None
+
+
+class DocumentListItem(DocumentSummary):
+    content_type: str
     created_at: datetime
 
 
-class DocumentDetail(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class ReviewQueueItem(DocumentSummary):
+    """Alias with document_id for backward-compatible JSON keys."""
+    document_id: str = ""
 
-    id: str
-    original_filename: str
+    @classmethod
+    def from_document(cls, doc: Any) -> ReviewQueueItem:
+        return cls(
+            id=doc.id,
+            document_id=doc.id,
+            original_filename=doc.original_filename,
+            document_type=doc.document_type,
+            confidence_score=doc.confidence_score,
+            status=doc.status.value if hasattr(doc.status, "value") else str(doc.status),
+        )
+
+
+class DocumentDetail(DocumentSummary):
     content_type: str
-    status: str
     file_path: str
-    document_type: str | None
-    confidence_score: float | None
     error_message: str | None
     created_at: datetime
     updated_at: datetime
@@ -123,11 +165,3 @@ class DocumentDetail(BaseModel):
 
 class ReviewUpdateRequest(BaseModel):
     extraction_data: dict[str, Any] | None = None
-
-
-class ReviewQueueItem(BaseModel):
-    document_id: str
-    original_filename: str
-    document_type: str | None
-    confidence_score: float | None
-    status: str

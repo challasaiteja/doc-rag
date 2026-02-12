@@ -1,15 +1,25 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 
 
 class Settings(BaseSettings):
-    app_name: str = "Document Intake POC"
-    app_env: str = "development"
-    database_url: str = "sqlite:///./document-intake.db"
-    anthropic_api_key: str = ""
-    confidence_threshold: float = 0.8
-    upload_dir: str = "./storage/uploads"
-    ocr_dir: str = "./storage/ocr"
-    extraction_dir: str = "./storage/extractions"
+    app_name: str
+    app_env: str
+    database_url: str
+    openai_api_key: str | None = None
+    openai_model: str
+    confidence_threshold: float
+    upload_dir: str
+    ocr_dir: str
+    extraction_dir: str
+
+    @field_validator("openai_api_key", mode="before")
+    @classmethod
+    def normalize_openai_key(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = value.strip()
+        return normalized or None
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

@@ -212,3 +212,6 @@ __marimo__/
 
 #environment variables
 .env
+
+#storage
+storage/

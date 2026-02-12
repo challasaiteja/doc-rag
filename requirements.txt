@@ -4,9 +4,10 @@ sqlalchemy
 pydantic
 pydantic-settings
 python-multipart
-jinja2
-anthropic
+openai
 pytesseract
 Pillow
 PyMuPDF
 pytest
+requests
+streamlit

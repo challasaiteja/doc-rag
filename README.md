@@ -6,10 +6,11 @@ Local FastAPI service for multimodal document intake of insurance claims and med
 
 - Upload PDF/JPG/PNG documents
 - OCR extraction with Tesseract and bounding boxes
-- Structured extraction with Anthropic Claude (with fallback extraction)
+- Structured extraction with OpenAI (with fallback extraction)
 - Type-specific validation for insurance claims and medical bills
 - Confidence scoring with review queue threshold
-- HTMX-based review UI with source quote and bbox context
+- Review UI with source quote and bbox context
+- Streamlit upload UI for local usage
 
 ## Setup
 
@@ -32,6 +33,14 @@ Local FastAPI service for multimodal document intake of insurance claims and med
    ```bash
    uvicorn app.main:app --reload
    ```
+
+6. Optional Streamlit upload UI:
+
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+   Then open the URL shown by Streamlit (usually `http://localhost:8501`).
 
 ## API Endpoints
 

@@ -4,13 +4,13 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import get_db
 from app.models import Document
 from app.processors.pipeline import process_document
+from app.queries import get_document_or_404
 from app.schemas import UploadResponse
 
 router = APIRouter(prefix="/api/upload", tags=["upload"])
@@ -44,22 +44,9 @@ def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db))
     db.refresh(document)
 
     processed = process_document(db, document)
-    return UploadResponse(
-        document_id=processed.id,
-        status=processed.status.value,
-        document_type=processed.document_type,
-        confidence_score=processed.confidence_score,
-    )
+    return UploadResponse.from_document(processed)
 
 
 @router.get("/{document_id}/status", response_model=UploadResponse)
 def upload_status(document_id: str, db: Session = Depends(get_db)) -> UploadResponse:
-    document = db.scalar(select(Document).where(Document.id == document_id))
-    if document is None:
-        raise HTTPException(status_code=404, detail="Document not found")
-    return UploadResponse(
-        document_id=document.id,
-        status=document.status.value,
-        document_type=document.document_type,
-        confidence_score=document.confidence_score,
-    )
+    return UploadResponse.from_document(get_document_or_404(db, document_id))
